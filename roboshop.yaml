@@ -1,5 +1,5 @@
 - name: create Ec2 instance and R53 records
-  hosts: local
+  hosts: localhost
   connection: local
   vars:
     AMI_ID: ami-0220d79f3f480ecf5
