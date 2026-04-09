@@ -26,14 +26,27 @@
     - name: printing output of the ec2
       ansible.builtin.debug:
        msg: "{{ ec2_output }}"
+
     - name: create route53 records
       amazon.aws.route53:
        state: present
        zone: "{{ DOMAIN_NAME }}"
-       record: "{{ item.item }}-{{ ENV }}.{{ DOMAIN_NAME }}" #mongodb.dev.rebba.online
+       record: "{{ item.item }}-{{ ENV }}.{{ DOMAIN_NAME }}" #mongodb-dev.rebba.online
        type: A
        ttl: 1
        value: "{{ item.instances[0].private_ip_address }}"
        wait: true
       loop: "{{ ec2_output.results }}"
+
+    - name: create route53 records
+      amazon.aws.route53:
+       state: present
+       zone: "{{ DOMAIN_NAME }}"
+       record: "roboshop-{{ ENV }}.{{ DOMAIN_NAME }}" #roboshop-dev.rebba.online
+       type: A
+       ttl: 1
+       value: "{{ item.instances[0].public_ip_address }}"
+       wait: true
+      loop: "{{ ec2_output.results }}"
+      when: item.item == "frontend"
   
