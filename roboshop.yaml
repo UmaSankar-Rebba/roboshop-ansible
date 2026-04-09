@@ -5,6 +5,7 @@
     AMI_ID: ami-0220d79f3f480ecf5
     SG_ID: sg-0c2d3e7831a625405
     ENV: dev
+    DOMAIN_NAME: rebba.online
     instances:
      - mongodb
      - catalogue
@@ -25,3 +26,14 @@
     - name: printing output of the ec2
       ansible.builtin.debug:
        msg: "{{ ec2_output }}"
+    - name: create route53 records
+      amazon.aws.route53:
+       state: present
+       zone: "{{ DOMAIN_NAME }}"
+       record: "{{ item.item }}-{{ ENV }}.{{ DOMAIN_NAME }}" #mongodb.dev.rebba.online
+       type: A
+       ttl: 1
+       value: "{{ item.instances[0].private_ip_address }}"
+       wait: true
+      loop: "{{ ec2_output.results }}"
+  
