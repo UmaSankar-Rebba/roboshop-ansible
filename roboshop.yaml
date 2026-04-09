@@ -22,6 +22,6 @@
          Name: "{{ item }}-{{ ENV }}"
       loop: "{{ instances }}"
       register: ec2_output
-- name: prints the output of ec2
-  ansible.builtin.debug:
-    msg: "{{ ec2_output }}"
+    - name: printing output of the ec2
+      ansible.builtin.debug:
+       msg: "{{ ec2_output }}"
