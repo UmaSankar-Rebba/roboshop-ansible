@@ -49,7 +49,7 @@
       amazon.aws.route53:
        state: absent
        zone: "{{ DOMAIN_NAME }}"
-       record: "{{ item.item }}-{{ ENV }}.{{ DOMAIN_NAME }}"
+       record: "roboshop-{{ ENV }}.{{ DOMAIN_NAME }}"
        type: A
        ttl: 1
       loop: "{{ instances }}"
@@ -76,3 +76,4 @@
        name: "{{ item }}-{{ ENV }}"
       loop: "{{ instances }}"
       when: action == "destroy"
+#ansible-playbook -i localhost,   -e '{"instances":["mongodb","catalogue","redis","user","cart","mysql","shipping","rabbitmq","payment","frontend"]}'  -e action=destroy roboshop.yaml
