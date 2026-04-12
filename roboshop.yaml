@@ -6,6 +6,7 @@
     SG_ID: sg-0c2d3e7831a625405
     ENV: dev
     DOMAIN_NAME: rebba.online
+    action: create
     instances:
      - mongodb
      - catalogue
@@ -16,17 +17,21 @@
        security_group: "{{ SG_ID }}"
        image_id: "{{ AMI_ID }}"
        name: "{{ item }}-{{ ENV }}" #mongodb-dev
-       tags :
+       tags:
          Project: roboshop
          Component: "{{ item }}"
          Environment: "{{ ENV }}"
          Name: "{{ item }}-{{ ENV }}"
       loop: "{{ instances }}"
       register: ec2_output
+      when: action == "create"
+
+#printing the ec2 output
     - name: printing output of the ec2
       ansible.builtin.debug:
        msg: "{{ ec2_output }}"
-
+      when: action == "create"
+#Create R53 records 
     - name: create route53 records
       amazon.aws.route53:
        state: present
@@ -37,7 +42,20 @@
        value: "{{ item.instances[0].private_ip_address }}"
        wait: true
       loop: "{{ ec2_output.results }}"
+      when: action == "create"
 
+#Delete R53 records for 
+    - name: destroy r53 records
+      amazon.aws.route53:
+       state: absent
+       zone: "{{ DOMAIN_NAME }}"
+       record: "{{ item.item }}-{{ ENV }}.{{ DOMAIN_NAME }}"
+       type: A
+       ttl: 1
+      loop: "{{ instances }}"
+      when: action == "destroy"
+
+#Creating R53 Recordss for the frontend
     - name: create route53 records
       amazon.aws.route53:
        state: present
@@ -48,5 +66,13 @@
        value: "{{ item.instances[0].public_ip_address }}"
        wait: true
       loop: "{{ ec2_output.results }}"
-      when: item.item == "frontend"
-  
+      when:
+      - item.item == "frontend"
+      - action == "create"
+#Deleting the EC2 instance
+    - name: delete ec2 instances records
+      amazon.aws.ec2_instance:
+       state: absent
+       name: "{{ item }}-{{ ENV }}"
+      loop: "{{ instances }}"
+      when: action == "destroy"
