@@ -6,7 +6,7 @@
     SG_ID: sg-0c2d3e7831a625405
     ENV: dev
     DOMAIN_NAME: rebba.online
-    action: create
+    ACTION: create
     instances:
      - mongodb
      - catalogue
@@ -24,13 +24,13 @@
          Name: "{{ item }}-{{ ENV }}"
       loop: "{{ instances }}"
       register: ec2_output
-      when: action == "create"
+      when: ACTION == "create"
 
 #printing the ec2 output
     - name: printing output of the ec2
       ansible.builtin.debug:
        msg: "{{ ec2_output }}"
-      when: action == "create"
+      when: ACTION == "create"
 #Create R53 records 
     - name: create route53 records
       amazon.aws.route53:
@@ -42,7 +42,7 @@
        value: "{{ item.instances[0].private_ip_address }}"
        wait: true
       loop: "{{ ec2_output.results }}"
-      when: action == "create"
+      when: ACTION == "create"
 
 #Delete R53 records for 
     - name: destroy r53 records
@@ -53,7 +53,7 @@
        type: A
        ttl: 1
       loop: "{{ instances }}"
-      when: action == "destroy"
+      when: ACTION == "destroy"
 
 #Creating R53 Recordss for the frontend
     - name: create route53 records
@@ -68,12 +68,12 @@
       loop: "{{ ec2_output.results }}"
       when:
       - item.item == "frontend"
-      - action == "create"
+      - ACTION == "create"
 #Deleting the EC2 instance
     - name: delete ec2 instances records
       amazon.aws.ec2_instance:
        state: absent
        name: "{{ item }}-{{ ENV }}"
       loop: "{{ instances }}"
-      when: action == "destroy"
-#ansible-playbook -i localhost,   -e '{"instances":["mongodb","catalogue","redis","user","cart","mysql","shipping","rabbitmq","payment","frontend"]}'  -e action=destroy roboshop.yaml
+      when: ACTION == "destroy"
+#ansible-playbook -i localhost,   -e '{"instances":["mongodb","catalogue","redis","user","cart","mysql","shipping","rabbitmq","payment","frontend"]}'  -e ACTION=destroy roboshop.yaml
