@@ -50,10 +50,19 @@
       amazon.aws.route53:
        state: absent
        zone: "{{ DOMAIN_NAME }}"
-       record: "roboshop-{{ ENV }}.{{ DOMAIN_NAME }}"
+       record: "{{ item }}-{{ ENV }}.{{ DOMAIN_NAME }}"
        type: A
        ttl: 1
       loop: "{{ instances }}"
+      when: ACTION == "destroy"
+
+    - name: destroy frontend records
+      amazon.aws.route53:
+       state: absent
+       zone: "{{ DOMAIN_NAME }}"
+       record: "roboshop-{{ ENV }}.{{ DOMAIN_NAME }}"
+       type: A
+       ttl: 1
       when: ACTION == "destroy"
 
 #Creating R53 Recordss for the frontend
