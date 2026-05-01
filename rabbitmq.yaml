@@ -1,6 +1,6 @@
 - name: configure rabbitmq service
   hosts: rabbitmq
-  becomes: yes
+  become: yes
   tasks:
    - name: copy rabbitmq repo
      ansible.builtin.copy:
