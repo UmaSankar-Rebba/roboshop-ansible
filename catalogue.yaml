@@ -41,9 +41,11 @@
       ansible.builtin.unarchive:
        src: /tmp/catalogue.zip
        dest: /app
+
     - name: Downloading the dependency libraries
       community.general.npm:
        path: /app
+
     - name: copying the service file
       ansible.builtin.copy:
        src: catalogue.service
@@ -63,7 +65,7 @@
       register: catalogue_output
 
     - name: display the catalogue output
-      ansuble.builtin.debug:
+      ansible.builtin.debug:
        msg: "{{ catalogue_output }}"
     - name: load the  products
       ansible.builtin.shell: mongosh --host "{{ MONGODB_HOST }}" </app/db/master-data.js
