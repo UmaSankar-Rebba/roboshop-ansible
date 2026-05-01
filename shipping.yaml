@@ -37,6 +37,7 @@
       ansible.builtin.unarchive:
        src: /tmp/payment.zip
        dest: /app
+       
     
     - name: installing dependencies
       ansible.builtin.command: mvn clean package
@@ -48,10 +49,10 @@
       args:
         chdir: /app
   
-    - name: Copying the payment.service file
+    - name: Copying the shipping.service file
       ansible.builtin.template:
        src: shipping.service
-       dest: /etc/systemd/system/payment.service
+       dest: /etc/systemd/system/shipping.service
       
     - name: Restart the service
       ansible.builtin.systemd_service:
@@ -64,14 +65,15 @@
       loop:
        - cryptography
        - PyMySQL
+
     - name: import shipping data
       community.mysql.mysql_db:
-      state: import
+       state: import
        name: all
-      login_host: "{{ MYSQL_HOST }}"
-      login_user: root
-      login_password: RoboShop@1
-      target: "{{ item }}"
+       login_host: "{{ MYSQL_HOST }}"
+       login_user: root
+       login_password: RoboShop@1
+       target: "{{ item }}"
       loop:
        - /app/db/schema.sql
        - /app/db/app-user.sql 
@@ -82,4 +84,3 @@
        name: shipping
        state: restarted
        enabled: yes
-       
