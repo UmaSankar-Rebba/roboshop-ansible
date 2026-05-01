@@ -30,7 +30,7 @@
 
     - name: delete existing file
       ansible.builtin.file:
-       path: /tmp/catalogue.zip
+       path: /tmp/cart.zip
        state: absent
 
     - name: downloading the code
