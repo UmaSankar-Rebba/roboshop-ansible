@@ -27,6 +27,11 @@
       ansible.builtin.file:
        path: /app
        state: absent
+
+    - name: Delete the existing zip folder
+      ansible.builtin.file:
+       path: /tmp/shipping.zip
+       state: absent
   
     - name: Downloading the code file
       ansible.builtin.get_url:
