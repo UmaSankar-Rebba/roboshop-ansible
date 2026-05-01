@@ -2,12 +2,13 @@
 Description = Cart Service
 [Service]
 User=roboshop
-Environment=REDIS_URL=redis://redis-dev.rebba.online:6379
-Environment=CATALOGUE_HOST=catalogue-dev.rebba.online
+// highlight-start
+Environment=REDIS_HOST="{{ REDIS_HOST }}"
+Environment=CATALOGUE_HOST="{{ CATALOGUE_HOST }}"
 Environment=CATALOGUE_PORT=8080
-Environment=MONGO=true
-Environment=MONGO_URL=mongodb://mongodb-dev.rebba.online:27017/users
+// highlight-end
 ExecStart=/bin/node /app/server.js
 SyslogIdentifier=cart
+
 [Install]
 WantedBy=multi-user.target
