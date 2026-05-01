@@ -35,12 +35,12 @@
 
     - name: downloading the code
       ansible.builtin.get_url:
-       url: https://roboshop-artifacts.s3.amazonaws.com/user-v3.zip
-       dest: /tmp/user.zip
+       url: https://roboshop-artifacts.s3.amazonaws.com/cart-v3.zip
+       dest: /tmp/cart.zip
 
     - name: archieve the downloaded code file
       ansible.builtin.unarchive:
-       src: /tmp/user.zip
+       src: /tmp/cart.zip
        dest: /app
        remote_src: yes
 
