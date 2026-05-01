@@ -46,7 +46,7 @@
 
     - name: downloading the dependies
       community.general.npm:
-      path: /app
+       path: /app
 
     - name: copying the user.service file
       ansible.builtin.template:
