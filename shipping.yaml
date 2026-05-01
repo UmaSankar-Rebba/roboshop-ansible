@@ -18,11 +18,11 @@
        home: /app
        shell: /sbin/nologin
 
-    - name: Delete existing dir 
-       ansible.builtin.file:
-        path: /app
-        state: absent
-  
+    - name: Delete existing app directory
+      ansible.builtin.file:
+       path: /app
+       state: absent
+    
     - name: Creating app directory
       ansible.builtin.file:
        path: /app
